@@ -24,15 +24,17 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 5432
 
 resources: {}
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
+ingressHostName: data-storage-service-db
+
+persistence:
+  storageClass: "longhorn"
+  existingClaim: ""
+  enabled: false
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  additionalVolumes: []
+  additionalMounts: []
