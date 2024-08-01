@@ -15,6 +15,6 @@ spec:
               service:
                 name: {{ include "app.fullname" . }}
                 port:
-                  number: 5432
+                  number: 8086
             path: /
             pathType: Prefix
