@@ -52,6 +52,16 @@ entries:
     urls:
     - https://glaciation-heu.github.io/glaciation-dssdb/helm-charts/data-storage-service-db-0.1.0-dev.6.main.ce91e984.tgz
     version: 0.1.0-dev.6.main.ce91e984
+  - apiVersion: v2
+    appVersion: 0.0.2
+    created: "2024-08-01T12:32:49.821509601Z"
+    description: Data Storage Servcie DB
+    digest: d0a19db5d2db27cdbfdde7ca2cb1bb4c5898f2bd21cefc43b80efa45a7a768f3
+    name: data-storage-service-db
+    type: application
+    urls:
+    - https://glaciation-heu.github.io/glaciation-dssdb/helm-charts/data-storage-service-db-0.0.2.tgz
+    version: 0.0.2
   server:
   - apiVersion: v2
     appVersion: 0.1.0-dev.2.main.2d3a6b99
@@ -73,4 +83,4 @@ entries:
     urls:
     - https://glaciation-heu.github.io/glaciation-dssdb/helm-charts/server-0.1.0-dev.1.main.fd2f6230.tgz
     version: 0.1.0-dev.1.main.fd2f6230
-generated: "2024-08-01T12:32:24.809127247Z"
+generated: "2024-08-01T12:32:49.820725816Z"
