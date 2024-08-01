@@ -1,5 +1,5 @@
 apiVersion: v2
-name: data-storage-service-DB
+name: data-storage-service-db
 description: Data Storage Servcie DB
 type: application
 version: ""
