@@ -13,7 +13,7 @@ spec:
         paths:
           - backend:
               service:
-                name: {{ include "app.fullname" . }}
+                name: {{ include "app.fullname" . | lower }}
                 port:
                   number: 8086
             path: /
