@@ -63,7 +63,7 @@ spec:
   - metadata:
       name: influxdb-volume
     spec:
-      accessMode: [ "ReadWriteOnce" ]
+      accessModes: [ "ReadWriteOnce" ]
       storageClassName: "longhorn"
       resources:
         requests:
