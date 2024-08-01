@@ -6,9 +6,9 @@ metadata:
     {{- include "app.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      {{- include "app.selectorLabels" . | nindent 6 }}
+  #selector:
+  #  matchLabels:
+  #    {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
