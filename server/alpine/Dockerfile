@@ -1,20 +1,20 @@
-FROM debian:bookworm-slim
+FROM alpine:3.20
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    # install dependencies \
-    apt-get update -y && \
-    apt-get install -y --no-install-recommends \
+RUN echo 'hosts: files dns' >> /etc/nsswitch.conf
+RUN apk add --no-cache \
+      bash \
       ca-certificates \
       curl \
-      gnupg && \
-    # cleanup apt \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+      gnupg \
+      run-parts \
+      su-exec \
+      tzdata && \
+    update-ca-certificates
 
 # Install dasel for configuration parsing
-RUN case "$(dpkg --print-architecture)" in \
-      *amd64) arch=amd64 ;; \
-      *arm64) arch=arm64 ;; \
+RUN case "$(apk --print-arch)" in \
+      x86_64)  arch=amd64 ;; \
+      aarch64) arch=arm64 ;; \
       *) echo 'Unsupported architecture' && exit 1 ;; \
     esac && \
     curl -fL "https://github.com/TomWright/dasel/releases/download/v2.4.1/dasel_linux_${arch}.gz" | gzip -d > /usr/local/bin/dasel && \
@@ -25,40 +25,22 @@ RUN case "$(dpkg --print-architecture)" in \
     chmod +x /usr/local/bin/dasel && \
     dasel --version
 
-RUN groupadd -r influxdb --gid=1000 && \
-    useradd -r -g influxdb --uid=1000 --create-home --home-dir=/home/influxdb --shell=/bin/bash influxdb
+RUN addgroup -S -g 1000 influxdb && \
+    adduser -S -G influxdb -u 1000 -h /home/influxdb -s /bin/sh influxdb && \
+    mkdir -p /home/influxdb && \
+    chown -R influxdb:influxdb /home/influxdb
 
-# Install gosu for easy step-down from root
-ENV GOSU_VER 1.16
-RUN case "$(dpkg --print-architecture)" in \
-      *amd64) arch=amd64 ;; \
-      *arm64) arch=arm64 ;; \
-      *) echo 'Unsupported architecture' && exit 1 ;; \
-    esac && \
-    export GNUPGHOME="$(mktemp -d)" && \
-    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys \
-      # Tianon Gravi <tianon@tianon.xyz> (gosu)
-      B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
-    curl -fLo /usr/local/bin/gosu     "https://github.com/tianon/gosu/releases/download/$GOSU_VER/gosu-${arch}" \
-         -fLo /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VER/gosu-${arch}.asc" && \
-    gpg --batch --verify /usr/local/bin/gosu.asc \
-                         /usr/local/bin/gosu && \
-    rm -rf /usr/local/bin/gosu.asc && \
-    chmod +x /usr/local/bin/gosu && \
-    gosu --version && \
-    gosu nobody true
-
-# Install the influxd server
+# Install the infuxd server
 ENV INFLUXDB_VERSION 2.7.8
-RUN case "$(dpkg --print-architecture)" in \
-      *amd64) arch=amd64 ;; \
-      *arm64) arch=arm64 ;; \
+RUN case "$(apk --print-arch)" in \
+      x86_64)  arch=amd64 ;; \
+      aarch64) arch=arm64 ;; \
       *) echo 'Unsupported architecture' && exit 1 ;; \
     esac && \
     export GNUPGHOME="$(mktemp -d)" && \
     gpg --batch --keyserver keyserver.ubuntu.com --recv-keys \
       # InfluxData Package Signing Key <support@influxdata.com>
-      9D539D90D3328DC7D6C8D3B9D8FF8E1F7DF8B07E && \
+      9D539D90D3328DC7D6C8D3B9D8FF8E1F7DF8B07E &&\
     curl -fLO "https://dl.influxdata.com/influxdb/releases/influxdb2-${INFLUXDB_VERSION}_linux_${arch}.tar.gz" \
          -fLO "https://dl.influxdata.com/influxdb/releases/influxdb2-${INFLUXDB_VERSION}_linux_${arch}.tar.gz.asc" && \
     gpg --batch --verify "influxdb2-${INFLUXDB_VERSION}_linux_${arch}.tar.gz.asc" \
@@ -67,14 +49,14 @@ RUN case "$(dpkg --print-architecture)" in \
     cp "influxdb2-${INFLUXDB_VERSION}/usr/bin/influxd" /usr/local/bin/influxd && \
     rm -rf "influxdb2-${INFLUXDB_VERSION}_linux_${arch}.tar.gz" \
            "influxdb2-${INFLUXDB_VERSION}_linux_${arch}.tar.gz.asc" \
-           "influxdb2_linux_${arch}" && \
+           "influxdb2-${INFLUXDB_VERSION}" && \
     influxd version
 
 # Install the influx CLI
 ENV INFLUX_CLI_VERSION 2.7.3
-RUN case "$(dpkg --print-architecture)" in \
-      *amd64) arch=amd64 ;; \
-      *arm64) arch=arm64 ;; \
+RUN case "$(apk --print-arch)" in \
+      x86_64)  arch=amd64 ;; \
+      aarch64) arch=arm64 ;; \
       *) echo 'Unsupported architecture' && exit 1 ;; \
     esac && \
     export GNUPGHOME="$(mktemp -d)" && \
