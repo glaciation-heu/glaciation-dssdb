@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "app.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" | lower }}
 {{- end }}
 
 {{/*
@@ -12,13 +12,13 @@ If release name contains chart name it will be used as a full name.
 */}}
 {{- define "app.fullname" -}}
 {{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" | lower }}
 {{- else }}
 {{- $name := default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" | lower }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -27,7 +27,7 @@ If release name contains chart name it will be used as a full name.
 Create chart name and version as used by the chart label.
 */}}
 {{- define "app.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" | lower }}
 {{- end }}
 
 {{/*
@@ -55,7 +55,7 @@ Create the name of the service account to use
 */}}
 {{- define "app.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "app.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "app.fullname" . | lower) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
