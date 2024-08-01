@@ -6,9 +6,9 @@ metadata:
     {{- include "app.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  #selector:
-  #  matchLabels:
-  #    {{- include "app.selectorLabels" . | nindent 6 }}
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -56,14 +56,15 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-      - name: dss-db
-        {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: dss-db-pvc
-        {{- else }}
-        emptyDir: { }
-        {{- end }}
-        {{- if .Values.persistence.additionalVolumes }}
-          {{- .Values.persistence.additionalVolumes | toYaml | nindent 8 }}
-        {{- end }}
+      volumeMounts:
+      - name: influxdb-volume
+        mountPath: /var/lib/influxdb
+  volumeClaimTemplate:
+  - metadata:
+      name: influxdb-volume
+    spec:
+      accessMode: [ "ReadWriteOnce" ]
+      storageClassName: "longhorn"
+      resources:
+        requests:
+          storage: 10Gi
