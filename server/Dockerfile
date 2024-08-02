@@ -102,6 +102,7 @@ VOLUME /var/lib/influxdb2 /etc/influxdb2
 
 COPY default-config.yml /etc/defaults/influxdb2/config.yml
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["influxd"]
