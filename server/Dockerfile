@@ -102,9 +102,7 @@ VOLUME /var/lib/influxdb2 /etc/influxdb2
 
 COPY default-config.yml /etc/defaults/influxdb2/config.yml
 COPY entrypoint.sh /entrypoint.sh
-COPY create_buckets.sh /create_buckets.sh
 RUN chmod +x /entrypoint.sh
-RUN chmod +x /create_buckets.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["influxd"]
@@ -121,4 +119,3 @@ ENV DOCKER_INFLUXDB_INIT_PASSWORD glaciation
 ENV DOCKER_INFLUXDB_INIT_ORG glaciation
 ENV DOCKER_INFLUXDB_INIT_BUCKET data_access
 
-#CMD ["/bin/bash", "-c", "/create_buckets.sh"]
