@@ -67,7 +67,7 @@ spec:
     - apiVersion: v1	
       kind: PersistentVolumeClaim  
       metadata:
-      name: influxdb-volume
+        name: influxdb-volume
       spec:
         accessModes: [ "ReadWriteOnce" ]
         storageClassName: "longhorn"
