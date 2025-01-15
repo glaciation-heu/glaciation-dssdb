@@ -100,14 +100,6 @@ RUN mkdir /docker-entrypoint-initdb.d && \
     chown -R influxdb:influxdb /etc/influxdb2
 VOLUME /var/lib/influxdb2 /etc/influxdb2
 
-COPY default-config.yml /etc/defaults/influxdb2/config.yml
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["influxd"]
-
-EXPOSE 8086
 
 ENV INFLUX_CONFIGS_PATH /etc/influxdb2/influx-configs
 ENV INFLUXD_INIT_PORT 9999
@@ -119,3 +111,23 @@ ENV DOCKER_INFLUXDB_INIT_PASSWORD glaciation
 ENV DOCKER_INFLUXDB_INIT_ORG glaciation
 ENV DOCKER_INFLUXDB_INIT_BUCKET energy_consumption
 ENV DOCKER_INFLUXDB_INIT_ADMIN_TOKEN iiN2cpMECn2ohmDQD8l4GDFUAwW7-GyV8a_IVZBPhJJY4kG6aBLERYZU4WsmBglWz4G72kUHxD_l_CUvT15Idw==
+
+COPY default-config.yml /etc/defaults/influxdb2/config.yml
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["influxd"]
+
+EXPOSE 8086
+
+#ENV INFLUX_CONFIGS_PATH /etc/influxdb2/influx-configs
+#ENV INFLUXD_INIT_PORT 9999
+#ENV INFLUXD_INIT_PING_ATTEMPTS 600
+#ENV DOCKER_INFLUXDB_INIT_CLI_CONFIG_NAME default
+#ENV DOCKER_INFLUXDB_INIT_MODE setup
+#ENV DOCKER_INFLUXDB_INIT_USERNAME glaciation
+#ENV DOCKER_INFLUXDB_INIT_PASSWORD glaciation
+#ENV DOCKER_INFLUXDB_INIT_ORG glaciation
+#ENV DOCKER_INFLUXDB_INIT_BUCKET energy_consumption
+#ENV DOCKER_INFLUXDB_INIT_ADMIN_TOKEN iiN2cpMECn2ohmDQD8l4GDFUAwW7-GyV8a_IVZBPhJJY4kG6aBLERYZU4WsmBglWz4G72kUHxD_l_CUvT15Idw==
